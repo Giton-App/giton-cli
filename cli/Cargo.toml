@@ -1,0 +1,19 @@
+[package]
+name = "cli"
+version = "1.0.0"
+authors = ["Abid Omar <contact@omarabid.com>"]
+description = "CLI interface for giton"
+edition = "2021"
+
+[dependencies]
+utils = { path = "../utils" }
+core = { path = "../core" }
+clap_complete = "4.4.4"
+
+[dependencies.clap]
+version = "4.4.7"
+features = ["cargo", "derive"]
+
+[dev-dependencies]
+assert_cmd = "2.0.12"
+predicates = "3.0.4"

@@ -1,0 +1,65 @@
+[package]
+name = "giton"
+version = "1.0.0"
+authors = ["Abid Omar <contact@omarabid.com>"]
+edition = "2021"
+repository = "https://github.com/Giton-App/giton-cli"
+readme = "README.md"
+license = "MIT"
+keywords = ["git", "ai"]
+description = """
+Giton is AI-powered utility for Git.
+"""
+
+[workspace]
+members = ["utils", "cli", "core"]
+
+[features]
+nightly = ["utils/nightly"]
+termlog = ["utils/termlog"]
+journald = ["utils/journald"]
+syslog = ["utils/syslog"]
+
+[dependencies]
+utils = { path = "utils" }
+cli = { path = "cli" }
+core = { path = "core" }
+human-panic = "1.2.2"
+better-panic = "0.3.0"
+log = "0.4.20"
+
+[dev-dependencies]
+assert_cmd = "2.0.12"
+predicates = "3.0.4"
+
+[profile.dev]
+opt-level = 0
+debug = true
+rpath = false
+lto = false
+debug-assertions = true
+codegen-units = 4
+
+[profile.release]
+opt-level = 3
+debug = false
+rpath = false
+lto = true
+debug-assertions = false
+codegen-units = 1
+
+[profile.test]
+opt-level = 1
+debug = true
+rpath = false
+lto = false
+debug-assertions = true
+codegen-units = 4
+
+[profile.bench]
+opt-level = 3
+debug = false
+rpath = false
+lto = true
+debug-assertions = false
+codegen-units = 1

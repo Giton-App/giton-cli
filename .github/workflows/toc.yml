@@ -1,0 +1,19 @@
+on:
+  push:
+    paths:
+      - ".github/workflows/toc.yml"
+      - "README.md"
+  pull_request:
+    paths:
+      - ".github/workflows/toc.yml"
+      - "README.md"
+
+name: ToC Generator
+jobs:
+  generateToC:
+    name: ToC Generator
+    runs-on: ubuntu-latest
+    steps:
+      - uses: omarabid-forks/toc-generator@v4
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
