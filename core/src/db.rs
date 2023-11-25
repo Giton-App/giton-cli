@@ -1,3 +1,4 @@
+use chrono::Duration;
 use std::{
     fs::OpenOptions,
     io::{BufRead, Write},
@@ -38,11 +39,33 @@ pub fn get_commands() -> Result<Vec<String>> {
 pub fn get_last_command() -> Result<String> {
     let file = OpenOptions::new().read(true).open(".giton")?;
 
-    let last_command = std::io::BufReader::new(file)
+    let last_line = std::io::BufReader::new(file)
         .lines()
         .last()
         .unwrap()
         .unwrap();
 
+    let last_command = last_line.split(", ").collect::<Vec<&str>>()[1].to_string();
+
     Ok(last_command)
+}
+
+pub fn display_commands() -> Result<()> {
+    let commands = get_commands()?;
+
+    for command in commands {
+        let timestamp = command.split(", ").collect::<Vec<&str>>()[0];
+        let command = command.split(", ").collect::<Vec<&str>>()[1];
+
+        let timestamp = timestamp.parse::<u64>().unwrap();
+        let datetime = UNIX_EPOCH + std::time::Duration::from_secs(timestamp);
+
+        // use chrono to convert datetime to user's timezone
+        let datetime =
+            chrono::DateTime::<chrono::Local>::from(datetime).format("%Y-%m-%d %H:%M:%S");
+
+        println!("{}: {}", datetime, command);
+    }
+
+    Ok(())
 }

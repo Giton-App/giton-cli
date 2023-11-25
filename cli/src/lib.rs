@@ -90,8 +90,8 @@ pub fn cli_match() -> Result<()> {
 
     // Execute the subcommand
     match &cli.command {
-        Commands::Undo => commands::config()?,
-        Commands::History => commands::config()?,
+        Commands::Undo => commands::undo()?,
+        Commands::History => commands::history()?,
         Commands::Completion {subcommand} => {
             let mut app = Cli::command();
             match subcommand {
