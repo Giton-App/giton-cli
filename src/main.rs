@@ -1,3 +1,5 @@
+use std::process::Command;
+
 #[cfg(not(debug_assertions))]
 use human_panic::setup_panic;
 
@@ -32,7 +34,19 @@ fn main() -> Result<()> {
     AppConfig::init(Some(config_contents))?;
 
     // Match Commands
-    cli::cli_match()?;
+    let cli_match = cli::cli_match();
+
+    match cli_match {
+        Ok(_) => {}
+        Err(e) => {
+            // extract args
+            let args: Vec<String> = std::env::args().skip(1).collect();
+            Command::new("git")
+                .args(args)
+                .spawn()
+                .expect("git command failed to start");
+        }
+    }
 
     Ok(())
 }

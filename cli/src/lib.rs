@@ -42,11 +42,13 @@ enum Commands {
         about = "Undo last command",
         long_about = None, 
     )]
+    Undo,
     #[clap(
         name = "history",
         about = "Show a history of Git command executed",
         long_about = None, 
     )]
+    History,
     #[clap(
         name = "completion",
         about = "Generate completion scripts",
@@ -61,7 +63,7 @@ enum Commands {
         about = "Show Giton Configuration",
         long_about = None,
     )]
-    Config,
+    Config, 
 }
 
 #[derive(Subcommand, PartialEq, Debug)]
@@ -76,7 +78,7 @@ enum CompletionSubcommand {
 
 pub fn cli_match() -> Result<()> {
     // Parse the command line arguments
-    let cli = Cli::parse();
+    let cli = Cli::try_parse()?;
 
     // Merge clap config file if the value is set
     AppConfig::merge_config(cli.onconfig.as_deref())?;
@@ -88,9 +90,12 @@ pub fn cli_match() -> Result<()> {
 
     // Execute the subcommand
     match &cli.command {
+        Commands::Undo => commands::config()?,
+        Commands::History => commands::config()?,
         Commands::Completion {subcommand} => {
             let mut app = Cli::command();
             match subcommand {
+                
                 CompletionSubcommand::Bash => {
                     generate(Bash, &mut app, "giton", &mut std::io::stdout());
                 }
