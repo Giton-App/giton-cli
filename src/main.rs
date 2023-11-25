@@ -1,3 +1,4 @@
+use core::db;
 use std::process::Command;
 
 #[cfg(not(debug_assertions))]
@@ -41,10 +42,15 @@ fn main() -> Result<()> {
         Err(e) => {
             // extract args
             let args: Vec<String> = std::env::args().skip(1).collect();
+            let args_string: String = args.join(" ");
+
             Command::new("git")
                 .args(args)
                 .spawn()
                 .expect("git command failed to start");
+
+            // if success, insert command into file
+            db::insert_command(args_string)?;
         }
     }
 
