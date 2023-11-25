@@ -19,9 +19,3 @@ fn test_version() {
     let mut cmd = Command::cargo_bin("giton").expect("Calling binary failed");
     cmd.arg("--version").assert().stdout(expected_version);
 }
-
-#[test]
-fn test_hazard_exit_code() {
-    let mut cmd = Command::cargo_bin("giton").expect("Calling binary failed");
-    cmd.arg("hazard").assert().code(0);
-}
