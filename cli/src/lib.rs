@@ -42,13 +42,11 @@ enum Commands {
         about = "Undo last command",
         long_about = None, 
     )]
-    Hazard,
     #[clap(
         name = "history",
         about = "Show a history of Git command executed",
         long_about = None, 
     )]
-    Error,
     #[clap(
         name = "completion",
         about = "Generate completion scripts",
@@ -90,8 +88,6 @@ pub fn cli_match() -> Result<()> {
 
     // Execute the subcommand
     match &cli.command {
-        Commands::Hazard => commands::hazard()?,
-        Commands::Error => commands::simulate_error()?,
         Commands::Completion {subcommand} => {
             let mut app = Cli::command();
             match subcommand {
