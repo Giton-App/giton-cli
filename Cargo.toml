@@ -16,9 +16,9 @@ members = ["utils", "cli", "core"]
 
 
 [dependencies]
-utils = { path = "utils", version = "0.0.1-alpha" }
-cli = { path = "cli", version = "0.0.1-alpha" }
-core = { path = "core", version = "0.0.1-alpha" }
+utils = { path = "utils", version = "0.0.1-alpha", package = "giton-utils" }
+cli = { path = "cli", version = "0.0.1-alpha", package = "giton-cli" }
+core = { path = "core", version = "0.0.1-alpha", package = "giton-core" }
 human-panic = "1.2.2"
 better-panic = "0.3.0"
 log = "0.4.20"

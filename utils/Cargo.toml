@@ -1,5 +1,5 @@
 [package]
-name = "utils"
+name = "giton-utils"
 version = "0.0.1-alpha"
 authors = ["Abid Omar <contact@omarabid.com>"]
 description = "Various utilities and functionalities"

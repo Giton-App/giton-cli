@@ -1,13 +1,13 @@
 [package]
-name = "cli"
+name = "giton-cli"
 version = "0.0.1-alpha"
 authors = ["Abid Omar <contact@omarabid.com>"]
 description = "CLI interface for giton"
 edition = "2021"
 
 [dependencies]
-utils = { path = "../utils" }
-core = { path = "../core" }
+utils = { path = "../utils", version = "0.0.1-alpha", package = "giton-utils" }
+core = { path = "../core", version = "0.0.1-alpha", package = "giton-core" }
 clap_complete = "4.4.4"
 
 [dependencies.clap]
