@@ -8,7 +8,7 @@ readme = "README.md"
 license = "MIT"
 keywords = ["git", "ai"]
 description = """
-Giton is AI-powered utility for Git.
+Giton is AI-powered utility for Git
 """
 
 [workspace]
