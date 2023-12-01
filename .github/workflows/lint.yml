@@ -1,0 +1,60 @@
+name: Lint
+
+on:
+  push:
+    paths:
+      - ".github/workflows/lint.yml"
+      - "src/**"
+      - "core/**"
+      - "cli/**"
+      - "utils/**"
+      - "tests/**"
+  pull_request:
+    paths:
+      - ".github/workflows/lint.yml"
+      - "src/**"
+      - "core/**"
+      - "cli/**"
+      - "utils/**"
+      - "tests/**"
+
+env:
+  RUST_BACKTRACE: 1
+  CARGO_PROFILE_DEV_DEBUG: 0 # This would add unnecessary bloat to the target folder, decreasing cache efficiency.
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fmt:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install Rust stable and rustfmt
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+
+      - name: Run cargo fmt
+        run: cargo fmt --manifest-path ./Cargo.toml --all -- --check
+
+  clippy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install Rust stable and clippy
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+
+      - name: install dependencies
+        run: |
+          sudo apt-get update
+
+      - name: run Clippy
+        run: cargo clippy --manifest-path ./Cargo.toml --all-targets --all-features -- -D warnings
