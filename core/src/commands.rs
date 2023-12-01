@@ -26,7 +26,8 @@ pub fn undo() -> Result<()> {
     let last_command = db::get_last_command()?;
 
     //println!("Undoing: {}", last_command);
-    let config = OpenAIConfig::new().with_api_key("");
+    let config =
+        OpenAIConfig::new().with_api_key("");
 
     let client = Client::with_config(config);
 

@@ -1,21 +1,17 @@
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{
+    generate,
+    shells::{Bash, Fish, Zsh},
+};
 use std::{path::PathBuf, str::FromStr};
-use clap::{Parser, Subcommand, CommandFactory};
-use clap_complete::{generate, shells::{Bash, Fish, Zsh}};
 
 use core::commands;
 use utils::app_config::AppConfig;
 use utils::error::Result;
 use utils::types::LogLevel;
 
-
 #[derive(Parser, Debug)]
-#[command(
-    name = "giton",
-    author,
-    about,
-    long_about = "Giton CLI",
-    version
-)]
+#[command(name = "giton", author, about, long_about = "Giton CLI", version)]
 //TODO: #[clap(setting = AppSettings::SubcommandRequired)]
 //TODO: #[clap(global_setting(AppSettings::DeriveDisplayOrder))]
 pub struct Cli {
@@ -23,11 +19,16 @@ pub struct Cli {
     pub onconfig: Option<PathBuf>,
 
     /// Set a custom config file
-    #[arg(name="debug", short, long="debug", value_name = "DEBUG")]
+    #[arg(name = "debug", short, long = "debug", value_name = "DEBUG")]
     pub debug: Option<bool>,
 
-    /// Set Log Level 
-    #[arg(name="log_level", short, long="log-level", value_name = "LOG_LEVEL")]
+    /// Set Log Level
+    #[arg(
+        name = "log_level",
+        short,
+        long = "log-level",
+        value_name = "LOG_LEVEL"
+    )]
     pub log_level: Option<LogLevel>,
 
     /// Subcommands
@@ -54,16 +55,16 @@ enum Commands {
         about = "Generate completion scripts",
         long_about = None,
         )]
-        Completion {
-            #[clap(subcommand)]
-            subcommand: CompletionSubcommand,
-        },
+    Completion {
+        #[clap(subcommand)]
+        subcommand: CompletionSubcommand,
+    },
     #[clap(
         name = "onconfig",
         about = "Show Giton Configuration",
         long_about = None,
     )]
-    Config, 
+    Config,
 }
 
 #[derive(Subcommand, PartialEq, Debug)]
@@ -85,17 +86,16 @@ pub fn cli_match() -> Result<()> {
 
     let app = Cli::command();
     let matches = app.get_matches();
-    
+
     AppConfig::merge_args(matches)?;
 
     // Execute the subcommand
     match &cli.command {
         Commands::Undo => commands::undo()?,
         Commands::History => commands::history()?,
-        Commands::Completion {subcommand} => {
+        Commands::Completion { subcommand } => {
             let mut app = Cli::command();
             match subcommand {
-                
                 CompletionSubcommand::Bash => {
                     generate(Bash, &mut app, "giton", &mut std::io::stdout());
                 }

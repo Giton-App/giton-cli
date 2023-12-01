@@ -14,11 +14,6 @@ Giton is AI-powered utility for Git
 [workspace]
 members = ["utils", "cli", "core"]
 
-[features]
-nightly = ["utils/nightly"]
-termlog = ["utils/termlog"]
-journald = ["utils/journald"]
-syslog = ["utils/syslog"]
 
 [dependencies]
 utils = { path = "utils" }
