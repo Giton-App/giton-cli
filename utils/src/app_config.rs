@@ -37,7 +37,7 @@ impl AppConfig {
         }
 
         // Merge settings with env variables
-        settings.merge(Environment::with_prefix("APP"))?; // TODO: Merge settings with Clap Settings Arguments
+        settings.merge(Environment::with_prefix("GITON"))?; // TODO: Merge settings with Clap Settings Arguments
 
         // Save Config to RwLoc
         {

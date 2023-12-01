@@ -1,3 +1,5 @@
+use std::process::Command;
+
 use async_openai::config::OpenAIConfig;
 use async_openai::types::{
     ChatCompletionRequestSystemMessageArgs, ChatCompletionRequestUserMessageArgs,
@@ -22,12 +24,26 @@ pub fn history() -> Result<()> {
     Ok(())
 }
 
+// run git status and return the output as a string
+pub fn get_git_status() -> Result<String> {
+    let output = Command::new("git")
+        .arg("status")
+        .output()
+        .expect("failed to execute process");
+
+    let output = String::from_utf8(output.stdout).unwrap();
+
+    Ok(output)
+}
+
 pub fn undo() -> Result<()> {
     let last_command = db::get_last_command()?;
+    let git_status = get_git_status()?;
+    println!("Undoing: {}", last_command);
 
     //println!("Undoing: {}", last_command);
-    let config =
-        OpenAIConfig::new().with_api_key("");
+    let openai_key = AppConfig::fetch()?.openai_key;
+    let config = OpenAIConfig::new().with_api_key(openai_key);
 
     let client = Client::with_config(config);
 
@@ -35,20 +51,30 @@ pub fn undo() -> Result<()> {
         .model("gpt-4")
         .messages([
             ChatCompletionRequestSystemMessageArgs::default()
-                .content(
-                    "You are an assistant that produces Git commands.
+                .content(format!(
+                    "You are an assistant that produces Git commands. The command you produce reverses the command you are given. 
 
 IMPORTANT:
 - ONLY RETURN THE CLI COMMAND IN BASH.
 - DO NOT ADD ```bash ```
 - IF THE COMMAND IS NOT REVESIBLE, RETURN 'NOT REVERSIBLE'
-- IF THE COMMAND IS NOT VALID, RETURN 'NOT VALID'",
-                )
+- IF THE COMMAND IS NOT VALID, RETURN 'NOT VALID'
+- IF YOU CAN EXPLAIN 'NOT REVERSIBLE' OR 'NOT VALID', DO SO.
+- FORMAT: 'NOT REVERSIBLE: <EXPLANATION>'
+
+GIT STATUS:
+{}
+",
+                    git_status
+                ))
                 .build()
                 .unwrap()
                 .into(),
             ChatCompletionRequestUserMessageArgs::default()
-                .content(format!("Reverse this git command: {}", last_command))
+                .content(format!(
+                    "git {}",
+                    last_command
+                ))
                 .build()
                 .unwrap()
                 .into(),
@@ -64,7 +90,7 @@ IMPORTANT:
     )
     .unwrap();
 
-    println!("{:?}", response);
+    println!("{:#?}", response);
 
     Ok(())
 }
