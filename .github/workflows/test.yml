@@ -1,0 +1,84 @@
+name: Test
+
+on:
+  push:
+    paths:
+      - ".github/workflows/test.yml"
+      - "src/**"
+      - "core/**"
+      - "cli/**"
+      - "utils/**"
+      - "tests/**"
+  pull_request:
+    paths:
+      - ".github/workflows/test.yml"
+      - "src/**"
+      - "core/**"
+      - "cli/**"
+      - "utils/**"
+      - "tests/**"
+
+env:
+  RUST_BACKTRACE: 1
+  CARGO_PROFILE_DEV_DEBUG: 0 # This would add unnecessary bloat to the target folder, decreasing cache efficiency.
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ${{ matrix.platform.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - {
+              target: x86_64-pc-windows-msvc,
+              os: windows-latest,
+              toolchain: "1.74.0",
+              cross: false,
+              command: "test",
+            }
+          - {
+              target: x86_64-unknown-linux-gnu,
+              os: ubuntu-latest,
+              toolchain: "1.74.0",
+              cross: false,
+              command: "test",
+            }
+          - {
+              target: x86_64-apple-darwin,
+              os: macos-latest,
+              toolchain: "1.74.0",
+              cross: false,
+              command: "test",
+            }
+        features:
+          - { args: --no-default-features, key: no-default }
+          - { args: --all-features, key: all }
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.platform.toolchain }}
+          targets: ${{ matrix.platform.target }}
+
+      - name: install Linux dependencies
+        if: contains(matrix.platform.target, 'unknown-linux')
+        run: |
+          sudo apt-get update
+
+      - name: test (using cross)
+        if: ${{ matrix.platform.cross }}
+        run: |
+          cargo install cross --git https://github.com/cross-rs/cross
+          cross ${{ matrix.platform.command }} --target ${{ matrix.platform.target }} ${{ matrix.features.args }}
+
+      - name: test (using cargo)
+        if: ${{ !matrix.platform.cross }}
+        run: cargo ${{ matrix.platform.command }} --target ${{ matrix.platform.target }} ${{ matrix.features.args }}
