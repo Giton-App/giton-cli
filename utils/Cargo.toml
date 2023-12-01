@@ -1,6 +1,6 @@
 [package]
 name = "giton-utils"
-version = "0.0.1-alpha"
+version = "0.0.1-beta.1"
 authors = ["Abid Omar <contact@omarabid.com>"]
 description = "Various utilities and functionalities"
 edition = "2021"
