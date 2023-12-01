@@ -4,6 +4,10 @@ version = "0.0.1-alpha"
 authors = ["Abid Omar <contact@omarabid.com>"]
 description = "Various utilities and functionalities"
 edition = "2021"
+repository = "https://github.com/Giton-App/giton-cli"
+readme = "README.md"
+license = "MIT"
+keywords = ["giton-workspace"]
 
 [dependencies]
 thiserror = "1.0.50"
