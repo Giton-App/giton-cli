@@ -21,10 +21,9 @@ jobs:
           title: "giton-${{ github.ref_name }}"
           draft: true
           prerelease: false
-
   build-release:
     name: giton-cli
-    needs: ["giton-release"]
+    needs: ["release"]
     runs-on: ${{matrix.os}}
     env:
       CARGO: cargo
