@@ -23,7 +23,7 @@ jobs:
           prerelease: false
   build-release:
     name: giton-cli
-    needs: ["release"]
+    needs: [release]
     runs-on: ${{matrix.os}}
     env:
       CARGO: cargo
@@ -63,3 +63,12 @@ jobs:
 
       - name: build
         run: cargo build --target ${{ matrix.target }} --release
+      - name: Upload artifact
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: "giton-cli/target/${{ matrix.target }}/release/giton"
+          asset_name: "giton"
+          asset_content_type: application/octet-stream
