@@ -63,11 +63,6 @@ jobs:
       - name: build
         run: cargo build --target ${{ matrix.target }} --release
 
-      - name: ls
-        run: ls -la && cd target && ls -la && cd x86_64-unknown-linux-gnu && ls -la && cd release && ls -la
-      - name: ls
-        run: ls -la && cd target && ls -la && cd x86_64-apple-darwin && ls -la && cd release && ls -la
-
       - name: Upload artifact
         uses: actions/upload-release-asset@v1.0.1
         env:
