@@ -70,7 +70,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ needs.automatic-release.outputs.upload_url }}
+          upload_url: ${{ needs.release.outputs.upload_url }}
           asset_path: "giton-cli/target/${{ matrix.target }}/release/giton"
           asset_name: "giton"
           asset_content_type: application/octet-stream
