@@ -36,9 +36,26 @@ pub fn get_git_status() -> Result<String> {
     Ok(output)
 }
 
+// run git log and return the output as a String
+pub fn get_git_log() -> Result<String> {
+    let output = Command::new("git")
+        .arg("log")
+        .arg("--oneline")
+        .output()
+        .expect("failed to execute process");
+
+    // limit the output to 10 lines
+    let cut_output = output.stdout.split_at(1000).0;
+    let cut_output_str = String::from_utf8(cut_output.to_vec()).unwrap();
+
+    Ok(cut_output_str)
+}
+
 pub fn undo() -> Result<()> {
     let last_command = db::get_last_command()?;
     let git_status = get_git_status()?;
+    let git_log = get_git_log()?;
+
     println!("Undoing: {}", last_command);
 
     //println!("Undoing: {}", last_command);
@@ -64,8 +81,10 @@ IMPORTANT:
 
 GIT STATUS:
 {}
+GIT LOG:
+{}
 ",
-                    git_status
+                    git_status, git_log
                 ))
                 .build()
                 .unwrap()
