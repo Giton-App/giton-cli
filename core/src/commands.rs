@@ -42,13 +42,14 @@ pub fn get_git_log() -> Result<String> {
         .arg("log")
         .arg("--oneline")
         .output()
-        .expect("failed to execute process");
+        .expect("failed to execute process")
+        .stdout;
 
     // limit the output to 10 lines
-    let cut_output = output.stdout.split_at(1000).0;
-    let cut_output_str = String::from_utf8(cut_output.to_vec()).unwrap();
+    let output_lines = output.split(|&c| c == b'\n').take(10).collect::<Vec<_>>();
+    let lines_string = String::from_utf8(output_lines.join(&b'\n')).unwrap();
 
-    Ok(cut_output_str)
+    Ok(lines_string)
 }
 
 pub fn undo() -> Result<()> {
@@ -110,6 +111,37 @@ GIT LOG:
     .unwrap();
 
     println!("{:#?}", response);
+
+    let returned_command = response
+        .choices
+        .first()
+        .unwrap()
+        .message
+        .content
+        .as_ref()
+        .unwrap();
+
+    println!("Run command: {} \n Type Y/N ?", returned_command);
+
+    let mut input = String::new();
+    std::io::stdin().read_line(&mut input)?;
+
+    if input.trim() == "Y" {
+        println!("yes");
+
+        let trimmed_command = returned_command.replace("git ", "");
+
+        let mut output = Command::new("git");
+        trimmed_command.split_whitespace().for_each(|arg| {
+            output.arg(arg);
+        });
+
+        let output_stdout = output.output().expect("failed to execute process").stdout;
+
+        let output = String::from_utf8(output_stdout).unwrap();
+
+        println!("{}", output);
+    }
 
     Ok(())
 }
