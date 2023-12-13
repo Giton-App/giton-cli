@@ -22,3 +22,4 @@ slog-stdlog = "4.1.1"
 clap = "4.4.7"
 log = "0.4.20"
 serde = { version = "1.0.192", features = ["derive"] }
+async-openai = "0.17.0"

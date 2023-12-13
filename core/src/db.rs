@@ -4,7 +4,7 @@ use std::{
     io::{BufRead, Write},
     time::{SystemTime, UNIX_EPOCH},
 };
-use utils::error::Result;
+use utils::error::{Error, Result};
 
 // Insert command into file (.giton) in a new line.
 pub fn insert_command(command: String) -> Result<()> {
@@ -42,8 +42,7 @@ pub fn get_last_command() -> Result<String> {
     let last_line = std::io::BufReader::new(file)
         .lines()
         .last()
-        .unwrap()
-        .unwrap();
+        .ok_or_else(|| Error::new("No commands found"))??;
 
     let last_command = last_line.split(", ").collect::<Vec<&str>>()[1].to_string();
 
@@ -57,7 +56,7 @@ pub fn display_commands() -> Result<()> {
         let timestamp = command.split(", ").collect::<Vec<&str>>()[0];
         let command = command.split(", ").collect::<Vec<&str>>()[1];
 
-        let timestamp = timestamp.parse::<u64>().unwrap();
+        let timestamp = timestamp.parse::<u64>()?;
         let datetime = UNIX_EPOCH + std::time::Duration::from_secs(timestamp);
 
         // use chrono to convert datetime to user's timezone

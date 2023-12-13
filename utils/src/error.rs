@@ -89,3 +89,30 @@ impl From<log::SetLoggerError> for Error {
         }
     }
 }
+
+impl From<std::string::FromUtf8Error> for Error {
+    fn from(err: std::string::FromUtf8Error) -> Self {
+        Error {
+            msg: String::from("FromUtf8Error"),
+            source: Some(Box::new(err)),
+        }
+    }
+}
+
+impl From<async_openai::error::OpenAIError> for Error {
+    fn from(err: async_openai::error::OpenAIError) -> Self {
+        Error {
+            msg: String::from("OpenAIError"),
+            source: Some(Box::new(err)),
+        }
+    }
+}
+
+impl From<std::num::ParseIntError> for Error {
+    fn from(err: std::num::ParseIntError) -> Self {
+        Error {
+            msg: String::from("ParseIntError"),
+            source: Some(Box::new(err)),
+        }
+    }
+}

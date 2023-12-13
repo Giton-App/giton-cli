@@ -6,7 +6,7 @@ use async_openai::types::{
 };
 use async_openai::Client;
 use utils::app_config::AppConfig;
-use utils::error::Result;
+use utils::error::{Error, Result};
 
 use crate::db;
 
@@ -31,7 +31,7 @@ pub fn get_git_status() -> Result<String> {
         .output()
         .expect("failed to execute process");
 
-    let output = String::from_utf8(output.stdout).unwrap();
+    let output = String::from_utf8(output.stdout)?;
 
     Ok(output)
 }
@@ -41,13 +41,12 @@ pub fn get_git_log() -> Result<String> {
     let output = Command::new("git")
         .arg("log")
         .arg("--oneline")
-        .output()
-        .expect("failed to execute process")
+        .output()?
         .stdout;
 
     // limit the output to 10 lines
     let output_lines = output.split(|&c| c == b'\n').take(10).collect::<Vec<_>>();
-    let lines_string = String::from_utf8(output_lines.join(&b'\n')).unwrap();
+    let lines_string = String::from_utf8(output_lines.join(&b'\n'))?;
 
     Ok(lines_string)
 }
@@ -88,7 +87,7 @@ GIT LOG:
                     git_status, git_log
                 ))
                 .build()
-                .unwrap()
+                ?
                 .into(),
             ChatCompletionRequestUserMessageArgs::default()
                 .content(format!(
@@ -96,30 +95,28 @@ GIT LOG:
                     last_command
                 ))
                 .build()
-                .unwrap()
+                ?
                 .into(),
         ])
         .max_tokens(50_u16)
-        .build()
-        .unwrap();
+        .build()?;
 
     let response = async_std::task::block_on(
         client
             .chat() // Get the API "group" (completions, images, etc.) from the client
             .create(request), // Make the API call in that "group"
-    )
-    .unwrap();
+    )?;
 
     println!("{:#?}", response);
 
     let returned_command = response
         .choices
         .first()
-        .unwrap()
+        .ok_or_else(|| Error::new("No choices returned"))?
         .message
         .content
         .as_ref()
-        .unwrap();
+        .ok_or_else(|| Error::new("No content returned"))?;
 
     println!("Run command: {} \n Type Y/N ?", returned_command);
 
@@ -138,7 +135,7 @@ GIT LOG:
 
         let output_stdout = output.output().expect("failed to execute process").stdout;
 
-        let output = String::from_utf8(output_stdout).unwrap();
+        let output = String::from_utf8(output_stdout)?;
 
         println!("{}", output);
     }
