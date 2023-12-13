@@ -55,6 +55,9 @@ jobs:
 
       - name: build
         run: cargo build --target ${{ matrix.target }} --release
+
+      - name: ls
+        run: ls -la && cd target && ls -la
       - name: Upload artifact
         uses: actions/upload-release-asset@v1.0.1
         env:
