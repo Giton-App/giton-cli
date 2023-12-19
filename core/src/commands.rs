@@ -9,6 +9,7 @@ use utils::app_config::AppConfig;
 use utils::error::{Error, Result};
 
 use comfy_table::Table;
+use spinners::{Spinner, Spinners};
 
 use crate::db;
 
@@ -64,11 +65,11 @@ pub fn get_git_log() -> Result<String> {
 }
 
 pub fn undo() -> Result<()> {
+    let mut spinner = Spinner::new(Spinners::Dots2, "Communicating with Open AI".into());
+
     let last_command = db::get_last_command()?;
     let git_status = get_git_status()?;
     let git_log = get_git_log()?;
-
-    println!("Undoing: {}", last_command);
 
     //println!("Undoing: {}", last_command);
     let openai_key = AppConfig::fetch()?.openai_key;
@@ -88,6 +89,8 @@ IMPORTANT:
 - DO NOT ADD ```bash ```
 - IF THE COMMAND IS NOT REVESIBLE, RETURN 'NOT REVERSIBLE'
 - IF THE COMMAND IS NOT VALID, RETURN 'NOT VALID'
+- ALWAYS RETURN A COMMAND WHEN POSSIBLE, EVEN IF IT CHANGES THE HISTORY.
+- IF THERE IS A POSSIBILITY, ALWAYS RETURN IT AS LONG AS IT IS VALID GIT COMMAND.
 - IF YOU CAN EXPLAIN 'NOT REVERSIBLE' OR 'NOT VALID', DO SO.
 - FORMAT: 'NOT REVERSIBLE: <EXPLANATION>'
 
@@ -119,7 +122,10 @@ GIT LOG:
             .create(request), // Make the API call in that "group"
     )?;
 
-    println!("{:#?}", response);
+    //println!("{:#?}", response);
+
+    spinner.stop();
+    println!("");
 
     let returned_command = response
         .choices
@@ -130,7 +136,8 @@ GIT LOG:
         .as_ref()
         .ok_or_else(|| Error::new("No content returned"))?;
 
-    println!("Run command: {} \n Type Y/N ?", returned_command);
+    println!("Suggested Command: \n$ {}", returned_command);
+    println!(":: Prooced with Command?: \n [Y/n]");
 
     let mut input = String::new();
     std::io::stdin().read_line(&mut input)?;
