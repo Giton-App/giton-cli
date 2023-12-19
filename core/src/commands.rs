@@ -8,12 +8,24 @@ use async_openai::Client;
 use utils::app_config::AppConfig;
 use utils::error::{Error, Result};
 
+use comfy_table::Table;
+
 use crate::db;
 
 /// Show the configuration file
 pub fn config() -> Result<()> {
     let config = AppConfig::fetch()?;
-    println!("{:#?}", config);
+
+    let mut table = Table::new();
+
+    table.set_header(vec!["Key", "Value"]);
+
+    config.into_iter().for_each(|(key, value)| {
+        table.add_row(vec![key, value]);
+        return ();
+    });
+
+    println!("{}", table);
 
     Ok(())
 }

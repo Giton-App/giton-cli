@@ -30,7 +30,7 @@ pub fn get_commands() -> Result<Vec<String>> {
 
     let commands = std::io::BufReader::new(file)
         .lines()
-        .map(|line| line.unwrap())
+        .map(|line| line.unwrap_or(String::from("")))
         .collect();
 
     Ok(commands)

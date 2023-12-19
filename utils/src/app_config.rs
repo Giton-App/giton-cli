@@ -108,6 +108,20 @@ impl AppConfig {
     }
 }
 
+impl IntoIterator for AppConfig {
+    type Item = (String, String);
+    type IntoIter = std::collections::hash_map::IntoIter<String, String>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        let mut map = std::collections::HashMap::new();
+        map.insert("debug".to_string(), self.debug.to_string());
+        map.insert("log_level".to_string(), self.log_level.to_string());
+        map.insert("openai_key".to_string(), self.openai_key.to_string());
+
+        map.into_iter()
+    }
+}
+
 // Coerce Config into AppConfig
 impl From<Config> for AppConfig {
     fn from(config: Config) -> Self {
