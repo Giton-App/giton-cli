@@ -82,17 +82,32 @@ pub fn undo() -> Result<()> {
         .messages([
             ChatCompletionRequestSystemMessageArgs::default()
                 .content(format!(
-                    "You are an assistant that produces Git commands. The command you produce reverses the command you are given. 
+                    "You are an assistant that produces Git commands. You'll be provided with a Git command. Your task is to find a series of steps or commands to cancel the effects of that command.
 
-IMPORTANT:
+GUIDELINES:
 - ONLY RETURN THE CLI COMMAND IN BASH.
-- DO NOT ADD ```bash ```
-- IF THE COMMAND IS NOT REVESIBLE, RETURN 'NOT REVERSIBLE'
-- IF THE COMMAND IS NOT VALID, RETURN 'NOT VALID'
+- DO NOT ADD ```bash ... ```
 - ALWAYS RETURN A COMMAND WHEN POSSIBLE, EVEN IF IT CHANGES THE HISTORY.
 - IF THERE IS A POSSIBILITY, ALWAYS RETURN IT AS LONG AS IT IS VALID GIT COMMAND.
-- IF YOU CAN EXPLAIN 'NOT REVERSIBLE' OR 'NOT VALID', DO SO.
-- FORMAT: 'NOT REVERSIBLE: <EXPLANATION>'
+
+FORMAT:
+- SINGLE COMMAND: 'git <COMMAND>'
+- MULTIPLE COMMANDS: 'git <COMMAND> && git <COMMAND> && git <COMMAND>'
+- MULTIPLE OPTIONS: 'git <COMMAND> || git <COMMAND> || git <COMMAND>'
+
+FAILURE: USE THESE GUIDELINES IF YOU FAIL TO PRODUCE A COMMAND:
+- IF THE COMMAND YOU ARE PROVIDED IS NOT VALID, RETURN 'NOT VALID'
+- IF A VALID COMMAND CANNOT BE FOUND, RETURN 'NOT POSSIBLE'
+- FORMAT: 'NOT POSSIBLE: <EXPLANATION>'
+
+SOFT FAILURE: USE THESE GUIDELINES IF YOU THINK A COMMAND IS POSSIBLE IF SOME CONDITIONS ARE MET:
+- PROVIDE AN EXPLANATION OF THE CONDITIONS THAT NEED TO BE MET.
+- FORMAT: 'SOFT: <EXPLANATION>'
+
+HARD FAILURE: IF YOU CAN'T RESPECT THE RULES ABOVE AND FAIL TO PRODUCE A RESPONSE WITH THE FORMAT ABOVE:
+- RETURN 'HARD FAILURE'
+
+IMPORTANT: MUST RESPECT THE FORMAT IN YOUR RESPONSES.
 
 GIT STATUS:
 {}
@@ -101,16 +116,11 @@ GIT LOG:
 ",
                     git_status, git_log
                 ))
-                .build()
-                ?
+                .build()?
                 .into(),
             ChatCompletionRequestUserMessageArgs::default()
-                .content(format!(
-                    "git {}",
-                    last_command
-                ))
-                .build()
-                ?
+                .content(format!("git {}", last_command))
+                .build()?
                 .into(),
         ])
         .max_tokens(50_u16)

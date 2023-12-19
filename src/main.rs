@@ -8,7 +8,7 @@ use human_panic::setup_panic;
 extern crate better_panic;
 
 use utils::app_config::AppConfig;
-use utils::error::Result;
+use utils::error::{Error, Result};
 
 /// The main entry point of the application.
 fn main() -> Result<()> {
@@ -33,6 +33,12 @@ fn main() -> Result<()> {
     // Initialize Configuration
     let config_contents = include_str!("resources/default_config.toml");
     AppConfig::init(Some(config_contents))?;
+
+    // Throw error if no OpenAI key is set
+    if AppConfig::get::<String>("openai_key")? == "" {
+        println!("No OpenAI API key set. Please set one with `export GITON_OPENAI_KEY=<key>`");
+        return Ok(());
+    }
 
     // Match Commands
     let cli_match = cli::cli_match();
