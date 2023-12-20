@@ -45,6 +45,12 @@ enum Commands {
     )]
     Undo,
     #[clap(
+        name = "helpme",
+        about = "Help Me!",
+        long_about = None, 
+    )]
+    HelpMe,
+    #[clap(
         name = "history",
         about = "Show a history of Git command executed",
         long_about = None, 
@@ -92,6 +98,7 @@ pub fn cli_match() -> Result<()> {
     // Execute the subcommand
     match &cli.command {
         Commands::Undo => commands::undo()?,
+        Commands::HelpMe => commands::helpme()?,
         Commands::History => commands::history()?,
         Commands::Completion { subcommand } => {
             let mut app = Cli::command();

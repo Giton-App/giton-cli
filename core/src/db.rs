@@ -25,6 +25,7 @@ pub fn insert_command(command: String) -> Result<()> {
     Ok(())
 }
 
+// Get all commands from file (.giton) and return them as a Vec<String>.
 pub fn get_commands() -> Result<Vec<String>> {
     let file = OpenOptions::new().read(true).open(".giton")?;
 
@@ -36,6 +37,7 @@ pub fn get_commands() -> Result<Vec<String>> {
     Ok(commands)
 }
 
+// Get the last command from file (.giton) and return it as a String.
 pub fn get_last_command() -> Result<String> {
     let file = OpenOptions::new().read(true).open(".giton")?;
 
@@ -49,6 +51,7 @@ pub fn get_last_command() -> Result<String> {
     Ok(last_command)
 }
 
+// Display all commands from file (.giton) in a human-readable format for the command line.
 pub fn display_commands() -> Result<()> {
     let commands = get_commands()?;
 
