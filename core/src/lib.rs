@@ -2,6 +2,7 @@ extern crate log;
 
 pub mod commands;
 pub mod db;
+pub mod decode;
 pub mod git;
 
 use utils::error::Result;

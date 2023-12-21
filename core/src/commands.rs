@@ -12,7 +12,8 @@ use comfy_table::Table;
 use spinners::{Spinner, Spinners};
 
 use crate::db;
-use crate::git;
+use crate::decode::{GPTResponse, GPTResult};
+use crate::git::{self, execute_gptresponse};
 
 /// Show the configuration file
 pub fn config() -> Result<()> {
@@ -54,8 +55,6 @@ pub fn undo() -> Result<()> {
         .replace("{git_status}", &git_status)
         .replace("{git_log}", &git_log);
 
-    println!("{}", &prompt);
-
     let request = async_openai::types::CreateChatCompletionRequestArgs::default()
         .model("gpt-4")
         .messages([
@@ -77,8 +76,6 @@ pub fn undo() -> Result<()> {
             .create(request), // Make the API call in that "group"
     )?;
 
-    //println!("{:#?}", response);
-
     spinner.stop();
     println!("");
 
@@ -91,27 +88,27 @@ pub fn undo() -> Result<()> {
         .as_ref()
         .ok_or_else(|| Error::new("No content returned"))?;
 
-    println!("Suggested Command: \n$ {}", returned_command);
-    println!(":: Prooced with Command?: \n [Y/n]");
+    let decoded_command = crate::decode::decode_gpt_response(returned_command.to_string())?;
+
+    println!("{}", &decoded_command);
+
+    let gpt_response: GPTResponse = match decoded_command {
+        GPTResult::Success(gpt_response) => gpt_response,
+        GPTResult::Failure(msg) => {
+            println!("Giton failed. You can try again. \n {}", &msg);
+
+            return Ok(());
+        }
+    };
+
+    println!(":: Prooced with Command(s)?: \n [Y/n]");
 
     let mut input = String::new();
     std::io::stdin().read_line(&mut input)?;
 
     if input.trim() == "Y" {
-        println!("yes");
-
-        let trimmed_command = returned_command.replace("git ", "");
-
-        let mut output = Command::new("git");
-        trimmed_command.split_whitespace().for_each(|arg| {
-            output.arg(arg);
-        });
-
-        let output_stdout = output.output().expect("failed to execute process").stdout;
-
-        let output = String::from_utf8(output_stdout)?;
-
-        println!("{}", output);
+        // execute GPTResponse
+        execute_gptresponse(gpt_response)?;
     }
 
     Ok(())
@@ -120,7 +117,6 @@ pub fn undo() -> Result<()> {
 pub fn helpme() -> Result<()> {
     let mut spinner = Spinner::new(Spinners::Dots2, "Communicating with Open AI".into());
 
-    let last_command = db::get_last_command()?;
     let git_status = git::get_status()?;
     let git_log = git::get_log()?;
 
@@ -132,8 +128,6 @@ pub fn helpme() -> Result<()> {
     let prompt = crate::PROMPT_HELPME
         .replace("{git_status}", &git_status)
         .replace("{git_log}", &git_log);
-
-    println!("{}", &prompt);
 
     let request = async_openai::types::CreateChatCompletionRequestArgs::default()
         .model("gpt-4")
@@ -150,8 +144,6 @@ pub fn helpme() -> Result<()> {
             .create(request), // Make the API call in that "group"
     )?;
 
-    //println!("{:#?}", response);
-
     spinner.stop();
     println!("");
 
@@ -164,27 +156,26 @@ pub fn helpme() -> Result<()> {
         .as_ref()
         .ok_or_else(|| Error::new("No content returned"))?;
 
-    println!("Suggested Command: \n$ {}", returned_command);
-    println!(":: Prooced with Command?: \n [Y/n]");
+    let decoded_command = crate::decode::decode_gpt_response(returned_command.to_string())?;
+
+    println!("{}", &decoded_command);
+
+    let gpt_response: GPTResponse = match decoded_command {
+        GPTResult::Success(gpt_response) => gpt_response,
+        GPTResult::Failure(msg) => {
+            println!("Giton failed. You can try again. \n {}", &msg);
+
+            return Ok(());
+        }
+    };
+
+    println!(":: Prooced with Command(s)?: \n [Y/n]");
 
     let mut input = String::new();
     std::io::stdin().read_line(&mut input)?;
 
     if input.trim() == "Y" {
-        println!("yes");
-
-        let trimmed_command = returned_command.replace("git ", "");
-
-        let mut output = Command::new("git");
-        trimmed_command.split_whitespace().for_each(|arg| {
-            output.arg(arg);
-        });
-
-        let output_stdout = output.output().expect("failed to execute process").stdout;
-
-        let output = String::from_utf8(output_stdout)?;
-
-        println!("{}", output);
+        execute_gptresponse(gpt_response)?;
     }
 
     Ok(())

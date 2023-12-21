@@ -1,5 +1,7 @@
 use std::process::Command;
-use utils::error::Result;
+use utils::error::{Error, Result};
+
+use crate::decode::{GPTResponse, ResponseStatus};
 
 // Get Git status and return it as a String
 pub fn get_status() -> Result<String> {
@@ -28,4 +30,39 @@ pub fn get_log() -> Result<String> {
     let lines_string = String::from_utf8(output_lines.join(&b'\n'))?;
 
     Ok(lines_string)
+}
+
+pub fn execute_command(command: String) -> Result<()> {
+    dbg!(&command);
+
+    let mut output = Command::new("git");
+
+    shlex::split(&command).unwrap().iter().for_each(|arg| {
+        output.arg(arg);
+    });
+
+    dbg!(&output);
+
+    let output_stdout = output.output().expect("failed to execute process").stdout;
+
+    let output = String::from_utf8(output_stdout)?;
+
+    println!("{}", output);
+
+    Ok(())
+}
+
+pub fn execute_gptresponse(response: GPTResponse) -> Result<()> {
+    match response.status {
+        ResponseStatus::Success => {
+            response.commands.iter().for_each(|command| {
+                execute_command(command.to_string()).unwrap();
+            });
+
+            return Ok(());
+        }
+        _ => {
+            return Err(Error::new("GPTResponse cannot be executed"));
+        }
+    }
 }
