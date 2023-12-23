@@ -10,7 +10,11 @@ giton
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [giton](#giton)
+- [Installation](#installation)
+- [Examples](#examples)
+- [GPT-4 Costs](#gpt-4-costs)
+- [Vulnerability reporting](#vulnerability-reporting)
+- [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
