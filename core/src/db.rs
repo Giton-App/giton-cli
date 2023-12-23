@@ -1,4 +1,3 @@
-use chrono::Duration;
 use std::{
     fs::OpenOptions,
     io::{BufRead, Write},
