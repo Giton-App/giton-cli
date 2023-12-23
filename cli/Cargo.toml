@@ -10,8 +10,8 @@ license = "MIT"
 keywords = ["giton-workspace"]
 
 [dependencies]
-utils = { path = "../utils", version = "0.0.1-beta.1", package = "giton-utils" }
-core = { path = "../core", version = "0.0.1-beta.1", package = "giton-core" }
+utils = { path = "../utils", version = "0.0.1", package = "giton-utils" }
+core = { path = "../core", version = "0.0.1", package = "giton-core" }
 clap_complete = "4.4.4"
 
 [dependencies.clap]

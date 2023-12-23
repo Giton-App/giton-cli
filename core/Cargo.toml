@@ -10,7 +10,7 @@ license = "MIT"
 keywords = ["giton-workspace"]
 
 [dependencies]
-utils = { path = "../utils", version = "0.0.1-beta.1", package = "giton-utils" }
+utils = { path = "../utils", version = "0.0.1", package = "giton-utils" }
 
 
 async-std = { version = "1.12.0", features = ["attributes", "tokio1"] }
