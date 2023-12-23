@@ -12,8 +12,6 @@ use utils::types::LogLevel;
 
 #[derive(Parser, Debug)]
 #[command(name = "giton", author, about, long_about = "Giton CLI", version)]
-//TODO: #[clap(setting = AppSettings::SubcommandRequired)]
-//TODO: #[clap(global_setting(AppSettings::DeriveDisplayOrder))]
 pub struct Cli {
     #[arg(short, long, value_name = "FILE")]
     pub onconfig: Option<PathBuf>,
