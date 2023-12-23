@@ -1,6 +1,6 @@
 [package]
 name = "giton-cli"
-version = "0.0.1-beta.1"
+version = "0.0.1"
 authors = ["Abid Omar <contact@omarabid.com>"]
 description = "CLI interface for giton"
 edition = "2021"

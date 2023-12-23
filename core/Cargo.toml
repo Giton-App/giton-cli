@@ -1,6 +1,6 @@
 [package]
 name = "giton-core"
-version = "0.0.1-beta.1"
+version = "0.0.1"
 authors = ["Abid Omar <contact@omarabid.com>"]
 description = "Main Package"
 edition = "2021"
