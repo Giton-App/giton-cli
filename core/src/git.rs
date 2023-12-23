@@ -33,16 +33,24 @@ pub fn get_log() -> Result<String> {
 }
 
 pub fn execute_command(command: String) -> Result<()> {
+    // create git command
     let mut output = Command::new("git");
 
+    // split command string into args
     shlex::split(&command).unwrap().iter().for_each(|arg| {
         output.arg(arg);
     });
 
+    // execute command
     let output_stdout = output.output().expect("failed to execute process").stdout;
 
+    // convert output to String
     let output = String::from_utf8(output_stdout)?;
 
+    // store command to db
+    crate::db::insert_command(command)?;
+
+    // print output
     println!("{}", output);
 
     Ok(())
