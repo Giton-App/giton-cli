@@ -34,27 +34,36 @@ pub fn config() -> Result<()> {
 }
 
 pub fn history() -> Result<()> {
+    // display commands history
     db::display_commands()?;
 
     Ok(())
 }
 
 pub fn undo() -> Result<()> {
+    // start spinner animation
     let mut spinner = Spinner::new(Spinners::Dots2, "Communicating with Open AI".into());
 
+    // get last command
     let last_command = db::get_last_command()?;
+    // get git status
     let git_status = git::get_status()?;
+    // get git log
     let git_log = git::get_log()?;
 
+    // get openai key from config
     let openai_key = AppConfig::fetch()?.openai_key;
     let config = OpenAIConfig::new().with_api_key(openai_key);
 
+    // create client
     let client = Client::with_config(config);
 
+    // create prompt with git status and git log
     let prompt = crate::PROMPT_UNDO
         .replace("{git_status}", &git_status)
         .replace("{git_log}", &git_log);
 
+    // create request
     let request = async_openai::types::CreateChatCompletionRequestArgs::default()
         .model("gpt-4")
         .messages([
@@ -67,18 +76,23 @@ pub fn undo() -> Result<()> {
                 .build()?
                 .into(),
         ])
-        .max_tokens(50_u16)
+        .max_tokens(64_u16)
         .build()?;
 
+    // make request
     let response = async_std::task::block_on(
         client
             .chat() // Get the API "group" (completions, images, etc.) from the client
             .create(request), // Make the API call in that "group"
     )?;
 
+    // stop spinner animation
     spinner.stop();
+
+    // print newline
     println!("");
 
+    // get first choice
     let returned_command = response
         .choices
         .first()
@@ -88,10 +102,13 @@ pub fn undo() -> Result<()> {
         .as_ref()
         .ok_or_else(|| Error::new("No content returned"))?;
 
+    // decode returned response
     let decoded_command = crate::decode::decode_gpt_response(returned_command.to_string())?;
 
+    // print GPTResult
     println!("{}", &decoded_command);
 
+    // match GPTResult and extract GPTResponse
     let gpt_response: GPTResponse = match decoded_command {
         GPTResult::Success(gpt_response) => gpt_response,
         GPTResult::Failure(msg) => {
@@ -101,13 +118,15 @@ pub fn undo() -> Result<()> {
         }
     };
 
-    println!(":: Prooced with Command(s)?: \n [Y/n]");
+    // ask user if they want to proceed with the command(s)
+    print!(":: Prooced with Command(s)?: [Y/n] ");
 
+    // get user input
     let mut input = String::new();
     std::io::stdin().read_line(&mut input)?;
 
+    // if user input is Y, execute GPTResponse
     if input.trim() == "Y" {
-        // execute GPTResponse
         execute_gptresponse(gpt_response)?;
     }
 

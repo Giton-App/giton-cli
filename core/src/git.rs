@@ -33,15 +33,11 @@ pub fn get_log() -> Result<String> {
 }
 
 pub fn execute_command(command: String) -> Result<()> {
-    dbg!(&command);
-
     let mut output = Command::new("git");
 
     shlex::split(&command).unwrap().iter().for_each(|arg| {
         output.arg(arg);
     });
-
-    dbg!(&output);
 
     let output_stdout = output.output().expect("failed to execute process").stdout;
 
