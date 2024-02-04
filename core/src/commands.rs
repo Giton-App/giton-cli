@@ -222,10 +222,10 @@ pub fn helpme() -> Result<()> {
             }
         }
         crate::decode::ResponseStatus::NotValid => {
-            println!("Invalid: {}", &gpt_response.explanation);
+            println!("{}", &gpt_response.explanation);
         }
         crate::decode::ResponseStatus::NotPossible => {
-            println!("Not Possible: {}", &gpt_response.explanation);
+            println!("{}", &gpt_response.explanation);
         }
     }
 
