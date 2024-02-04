@@ -3,7 +3,7 @@ use clap_complete::{
     generate,
     shells::{Bash, Fish, Zsh},
 };
-use std::{path::PathBuf, str::FromStr};
+use std::{path::PathBuf};
 
 use core::commands;
 use utils::app_config::AppConfig;

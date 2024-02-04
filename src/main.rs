@@ -35,7 +35,7 @@ fn main() -> Result<()> {
     AppConfig::init(Some(config_contents))?;
 
     // Throw error if no OpenAI key is set
-    if AppConfig::get::<String>("openai_key")? == "" {
+    if AppConfig::get::<String>("openai_key")?.is_empty() {
         println!("No OpenAI API key set. Please set one with `export GITON_OPENAI_KEY=<key>`");
         return Ok(());
     }

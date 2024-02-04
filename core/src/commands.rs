@@ -23,7 +23,6 @@ pub fn config() -> Result<()> {
 
     config.into_iter().for_each(|(key, value)| {
         table.add_row(vec![key, value]);
-        return ();
     });
 
     println!("{}", table);
@@ -88,7 +87,7 @@ pub fn undo() -> Result<()> {
     spinner.stop();
 
     // print newline
-    println!("");
+    println!();
 
     // get first choice
     let returned_command = response
@@ -105,7 +104,7 @@ pub fn undo() -> Result<()> {
 
     // print GPTResult
     println!("{}", &decoded_command);
-    println!("");
+    println!();
 
     // match GPTResult and extract GPTResponse
     let gpt_response: GPTResponse = match decoded_command {
@@ -175,7 +174,7 @@ pub fn helpme() -> Result<()> {
     spinner.stop();
 
     // print newline
-    println!("");
+    println!();
 
     // get first choice
     let returned_command = response
@@ -204,11 +203,10 @@ pub fn helpme() -> Result<()> {
         crate::decode::ResponseStatus::Success => {
             // print GPTResult
             println!("{}", &decoded_command);
-            println!("");
+            println!();
 
             // ask user if they want to proceed with the command(s)
             println!(":: Prooced with Command(s)?: [Y/n] ");
-            println!(":: Giton Success");
 
             // get user input
             let mut input = String::new();

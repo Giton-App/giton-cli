@@ -63,10 +63,8 @@ pub fn execute_gptresponse(response: GPTResponse) -> Result<()> {
                 execute_command(command.to_string()).unwrap();
             });
 
-            return Ok(());
+            Ok(())
         }
-        _ => {
-            return Err(GitonError::new("GPTResponse cannot be executed"));
-        }
+        _ => Err(GitonError::new("GPTResponse cannot be executed")),
     }
 }
