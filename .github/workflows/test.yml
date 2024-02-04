@@ -73,6 +73,9 @@ jobs:
         run: |
           sudo apt-get update
 
+      - name: add OpenAI env variable
+        run: export GITON_OPENAI_key=void
+
       - name: test (using cross)
         if: ${{ matrix.platform.cross }}
         run: |
