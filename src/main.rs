@@ -43,8 +43,6 @@ fn main() -> Result<()> {
     // Match Commands
     let cli_match = cli::cli_match();
 
-    dbg!(&cli_match);
-
     match cli_match {
         Ok(_) => {}
         Err(e) => {

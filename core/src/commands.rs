@@ -187,8 +187,6 @@ pub fn helpme() -> Result<()> {
         .as_ref()
         .ok_or_else(|| GitonError::EmptyResponse(String::from("No content returned")))?;
 
-    dbg!(returned_command);
-
     // decode returned response
     let decoded_command = crate::decode::decode_gpt_response(returned_command.to_string())?;
 
