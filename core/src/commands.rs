@@ -206,16 +206,27 @@ pub fn helpme() -> Result<()> {
         }
     };
 
-    // ask user if they want to proceed with the command(s)
-    println!(":: Prooced with Command(s)?: [Y/n] ");
+    match gpt_response.status {
+        crate::decode::ResponseStatus::Success => {
+            // ask user if they want to proceed with the command(s)
+            println!(":: Prooced with Command(s)?: [Y/n] ");
+            println!(":: Giton Success");
 
-    // get user input
-    let mut input = String::new();
-    std::io::stdin().read_line(&mut input)?;
+            // get user input
+            let mut input = String::new();
+            std::io::stdin().read_line(&mut input)?;
 
-    // if user input is Y, execute GPTResponse
-    if input.trim() == "Y" {
-        execute_gptresponse(gpt_response)?;
+            // if user input is Y, execute GPTResponse
+            if input.trim() == "Y" {
+                execute_gptresponse(gpt_response)?;
+            }
+        }
+        crate::decode::ResponseStatus::NotValid => {
+            println!("Invalid: {}", &gpt_response.explanation);
+        }
+        crate::decode::ResponseStatus::NotPossible => {
+            println!("Not Possible: {}", &gpt_response.explanation);
+        }
     }
 
     Ok(())
