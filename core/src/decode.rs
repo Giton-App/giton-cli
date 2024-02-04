@@ -66,7 +66,7 @@ pub fn decode_gpt_response(response: String) -> Result<GPTResult> {
         }));
     }
 
-    Err(GitonError::new("Could not decode GPT response"))
+    Err(GitonError::DecodeResponse(response.to_string()))
 }
 
 // implement display for GPTResult

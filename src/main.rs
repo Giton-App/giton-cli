@@ -48,17 +48,24 @@ fn main() -> Result<()> {
     match cli_match {
         Ok(_) => {}
         Err(e) => {
-            // extract args
-            let args: Vec<String> = std::env::args().skip(1).collect();
-            let args_string: String = args.join(" ");
+            match e {
+                GitonError::Clap(_clap_error) => {
+                    // extract args
+                    let args: Vec<String> = std::env::args().skip(1).collect();
+                    let args_string: String = args.join(" ");
 
-            Command::new("git")
-                .args(args)
-                .spawn()
-                .expect("git command failed to start");
+                    Command::new("git")
+                        .args(args)
+                        .spawn()
+                        .expect("git command failed to start");
 
-            // if success, insert command into file
-            db::insert_command(args_string)?;
+                    // if success, insert command into file
+                    db::insert_command(args_string)?;
+                }
+                _ => {
+                    println!("{}", e);
+                }
+            }
         }
     }
 

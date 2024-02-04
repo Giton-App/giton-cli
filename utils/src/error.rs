@@ -15,6 +15,8 @@ pub enum GitonError {
         #[source]
         source: Box<dyn std::error::Error + Send + Sync + 'static>,
     },
+    #[error("Decode Error: {0}")]
+    DecodeResponse(String),
     #[error("IO Error")]
     Io(#[from] std::io::Error),
     #[error("Config Error")]
