@@ -24,8 +24,8 @@ pub enum ResponseStatus {
 pub fn decode_gpt_response(response: String) -> Result<GPTResult> {
     let response = response.trim();
 
-    if response.starts_with("NOT_VALID:") {
-        let explanation = response.replace("NOT_VALID:", "");
+    if response.starts_with("NOT VALID:") {
+        let explanation = response.replace("NOT VALID:", "");
 
         return Ok(GPTResult::Success(GPTResponse {
             status: ResponseStatus::NotValid,
@@ -34,8 +34,8 @@ pub fn decode_gpt_response(response: String) -> Result<GPTResult> {
         }));
     }
 
-    if response.starts_with("NOT_POSSIBLE:") {
-        let explanation = response.replace("NOT_POSSIBLE:", "");
+    if response.starts_with("NOT POSSIBLE:") {
+        let explanation = response.replace("NOT POSSIBLE:", "");
 
         return Ok(GPTResult::Success(GPTResponse {
             status: ResponseStatus::NotPossible,
