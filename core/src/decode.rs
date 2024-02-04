@@ -1,20 +1,20 @@
 use comfy_table::Table;
 use utils::error::{GitonError, Result};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum GPTResult {
     Success(GPTResponse),
     Failure(String),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct GPTResponse {
     pub status: ResponseStatus,
     pub explanation: String,
     pub commands: Vec<String>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum ResponseStatus {
     Success,
     NotValid,

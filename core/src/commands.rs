@@ -192,12 +192,8 @@ pub fn helpme() -> Result<()> {
     // decode returned response
     let decoded_command = crate::decode::decode_gpt_response(returned_command.to_string())?;
 
-    // print GPTResult
-    println!("{}", &decoded_command);
-    println!("");
-
     // match GPTResult and extract GPTResponse
-    let gpt_response: GPTResponse = match decoded_command {
+    let gpt_response: GPTResponse = match decoded_command.clone() {
         GPTResult::Success(gpt_response) => gpt_response,
         GPTResult::Failure(msg) => {
             println!("Giton failed. You can try again. \n {}", &msg);
@@ -208,6 +204,10 @@ pub fn helpme() -> Result<()> {
 
     match gpt_response.status {
         crate::decode::ResponseStatus::Success => {
+            // print GPTResult
+            println!("{}", &decoded_command);
+            println!("");
+
             // ask user if they want to proceed with the command(s)
             println!(":: Prooced with Command(s)?: [Y/n] ");
             println!(":: Giton Success");
