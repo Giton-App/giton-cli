@@ -73,15 +73,15 @@ jobs:
         run: |
           sudo apt-get update
 
-      - name: add OpenAI env variable
-        run: export GITON_OPENAI_key=void
-
       - name: test (using cross)
         if: ${{ matrix.platform.cross }}
         run: |
           cargo install cross --git https://github.com/cross-rs/cross
+          export GITON_OPENAI_KEY=void
           cross ${{ matrix.platform.command }} --target ${{ matrix.platform.target }} ${{ matrix.features.args }}
 
       - name: test (using cargo)
         if: ${{ !matrix.platform.cross }}
-        run: cargo ${{ matrix.platform.command }} --target ${{ matrix.platform.target }} ${{ matrix.features.args }}
+        run: |
+          export GITON_OPENAI_KEY=void
+          cargo ${{ matrix.platform.command }} --target ${{ matrix.platform.target }} ${{ matrix.features.args }}
