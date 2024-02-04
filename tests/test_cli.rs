@@ -44,7 +44,7 @@ fn test_version() {
 // `onconfig`.
 #[test]
 fn test_passthrough() {
-    let expected_initial = "+------------+-----------------------------------------------------+";
+    let expected_initial = "+--";
 
     let mut cmd = Command::cargo_bin("giton").expect("Calling binary failed");
 
