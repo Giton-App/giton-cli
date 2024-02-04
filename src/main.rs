@@ -8,7 +8,7 @@ use human_panic::setup_panic;
 extern crate better_panic;
 
 use utils::app_config::AppConfig;
-use utils::error::{Error, Result};
+use utils::error::{GitonError, Result};
 
 /// The main entry point of the application.
 fn main() -> Result<()> {

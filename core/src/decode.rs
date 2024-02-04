@@ -1,5 +1,5 @@
 use comfy_table::Table;
-use utils::error::{Error, Result};
+use utils::error::{GitonError, Result};
 
 #[derive(Debug)]
 pub enum GPTResult {
@@ -52,7 +52,9 @@ pub fn decode_gpt_response(response: String) -> Result<GPTResult> {
                 if command.trim().starts_with("git") {
                     Ok(command.trim().replace("git ", ""))
                 } else {
-                    Err(Error::new("One or more commands do not start with 'git'"))
+                    Err(GitonError::new(
+                        "One or more commands do not start with 'git'",
+                    ))
                 }
             })
             .collect::<Result<Vec<String>>>()?;
@@ -64,7 +66,7 @@ pub fn decode_gpt_response(response: String) -> Result<GPTResult> {
         }));
     }
 
-    Err(Error::new("Could not decode GPT response"))
+    Err(GitonError::new("Could not decode GPT response"))
 }
 
 // implement display for GPTResult

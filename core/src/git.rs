@@ -1,5 +1,5 @@
 use std::process::Command;
-use utils::error::{Error, Result};
+use utils::error::{GitonError, Result};
 
 use crate::decode::{GPTResponse, ResponseStatus};
 
@@ -66,7 +66,7 @@ pub fn execute_gptresponse(response: GPTResponse) -> Result<()> {
             return Ok(());
         }
         _ => {
-            return Err(Error::new("GPTResponse cannot be executed"));
+            return Err(GitonError::new("GPTResponse cannot be executed"));
         }
     }
 }

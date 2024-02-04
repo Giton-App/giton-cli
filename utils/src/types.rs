@@ -28,7 +28,7 @@ impl std::fmt::Display for LogLevel {
 }
 
 impl FromStr for LogLevel {
-    type Err = crate::error::Error;
+    type Err = crate::error::GitonError;
 
     fn from_str(s: &str) -> Result<Self> {
         match s {

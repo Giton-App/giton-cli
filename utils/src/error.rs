@@ -1,118 +1,56 @@
-use std::fmt;
 use thiserror::Error;
 
 /// Result alias
-pub type Result<T> = std::result::Result<T, Error>;
+pub type Result<T> = std::result::Result<T, GitonError>;
 
 /// Error type for this library.
 #[derive(Error, Debug)]
-pub struct Error {
-    pub msg: String,
-    source: Option<Box<dyn std::error::Error + Send + Sync>>,
+pub enum GitonError {
+    #[error("Other: {}", &.0)]
+    AdHoc(String),
+
+    #[error("{msg}: {source:?}")]
+    Compat {
+        msg: String,
+        #[source]
+        source: Box<dyn std::error::Error + Send + Sync + 'static>,
+    },
+    #[error("IO Error")]
+    Io(#[from] std::io::Error),
+    #[error("Config Error")]
+    Config(#[from] config::ConfigError),
+    #[error("Clap Error")]
+    Clap(#[from] clap::Error),
+    #[error("Logger Error")]
+    Logger(#[from] log::SetLoggerError),
+    #[error("FromUtf8Error")]
+    FromUtf8(#[from] std::string::FromUtf8Error),
+    #[error("OpenAIError")]
+    OpenAI(#[from] async_openai::error::OpenAIError),
+    #[error("ParseIntError")]
+    ParseInt(#[from] std::num::ParseIntError),
 }
 
-// Implement the Display trait for our Error type.
-impl fmt::Display for Error {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.msg)
-    }
-}
-
-// Implement Default for Error
-impl Default for Error {
-    fn default() -> Self {
-        Error {
-            msg: "".to_string(),
-            source: None,
-        }
-    }
-}
-
-impl Error {
-    /// Create a new Error instance.
+impl GitonError {
+    /// Create a new instance of PyroscopeError
     pub fn new(msg: &str) -> Self {
-        Error {
-            msg: msg.to_string(),
-            source: None,
-        }
+        GitonError::AdHoc(msg.to_string())
     }
-    /// Create a new Error instance with a source error.
-    pub fn with_source(msg: &str, source: Box<dyn std::error::Error + Send + Sync>) -> Self {
-        Error {
+
+    /// Create a new instance of PyroscopeError with source
+    pub fn new_with_source<E>(msg: &str, source: E) -> Self
+    where
+        E: std::error::Error + Send + Sync + 'static,
+    {
+        GitonError::Compat {
             msg: msg.to_string(),
-            source: Some(source),
+            source: Box::new(source),
         }
     }
 }
 
-impl From<config::ConfigError> for Error {
-    fn from(err: config::ConfigError) -> Self {
-        Error {
-            msg: String::from("Config Error"),
-            source: Some(Box::new(err)),
-        }
-    }
-}
-
-impl<T> From<std::sync::PoisonError<T>> for Error {
+impl<T> From<std::sync::PoisonError<T>> for GitonError {
     fn from(_err: std::sync::PoisonError<T>) -> Self {
-        Error {
-            msg: String::from("Poison Error"),
-            source: None,
-        }
-    }
-}
-
-impl From<std::io::Error> for Error {
-    fn from(err: std::io::Error) -> Self {
-        Error {
-            msg: String::from("IO Error"),
-            source: Some(Box::new(err)),
-        }
-    }
-}
-
-impl From<clap::Error> for Error {
-    fn from(err: clap::Error) -> Self {
-        Error {
-            msg: String::from("Clap Error"),
-            source: Some(Box::new(err)),
-        }
-    }
-}
-
-impl From<log::SetLoggerError> for Error {
-    fn from(err: log::SetLoggerError) -> Self {
-        Error {
-            msg: String::from("Logger Error"),
-            source: Some(Box::new(err)),
-        }
-    }
-}
-
-impl From<std::string::FromUtf8Error> for Error {
-    fn from(err: std::string::FromUtf8Error) -> Self {
-        Error {
-            msg: String::from("FromUtf8Error"),
-            source: Some(Box::new(err)),
-        }
-    }
-}
-
-impl From<async_openai::error::OpenAIError> for Error {
-    fn from(err: async_openai::error::OpenAIError) -> Self {
-        Error {
-            msg: String::from("OpenAIError"),
-            source: Some(Box::new(err)),
-        }
-    }
-}
-
-impl From<std::num::ParseIntError> for Error {
-    fn from(err: std::num::ParseIntError) -> Self {
-        Error {
-            msg: String::from("ParseIntError"),
-            source: Some(Box::new(err)),
-        }
+        GitonError::AdHoc("Poison Error".to_owned())
     }
 }

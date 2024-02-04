@@ -4,7 +4,7 @@ use async_openai::types::{
 };
 use async_openai::Client;
 use utils::app_config::AppConfig;
-use utils::error::{Error, Result};
+use utils::error::{GitonError, Result};
 
 use comfy_table::Table;
 use spinners::{Spinner, Spinners};
@@ -94,11 +94,11 @@ pub fn undo() -> Result<()> {
     let returned_command = response
         .choices
         .first()
-        .ok_or_else(|| Error::new("No choices returned"))?
+        .ok_or_else(|| GitonError::new("No choices returned"))?
         .message
         .content
         .as_ref()
-        .ok_or_else(|| Error::new("No content returned"))?;
+        .ok_or_else(|| GitonError::new("No content returned"))?;
 
     // decode returned response
     let decoded_command = crate::decode::decode_gpt_response(returned_command.to_string())?;
@@ -181,11 +181,11 @@ pub fn helpme() -> Result<()> {
     let returned_command = response
         .choices
         .first()
-        .ok_or_else(|| Error::new("No choices returned"))?
+        .ok_or_else(|| GitonError::new("No choices returned"))?
         .message
         .content
         .as_ref()
-        .ok_or_else(|| Error::new("No content returned"))?;
+        .ok_or_else(|| GitonError::new("No content returned"))?;
 
     dbg!(returned_command);
 
