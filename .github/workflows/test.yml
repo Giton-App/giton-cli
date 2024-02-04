@@ -80,8 +80,21 @@ jobs:
           export GITON_OPENAI_KEY=void
           cross ${{ matrix.platform.command }} --target ${{ matrix.platform.target }} ${{ matrix.features.args }}
 
+      - name: test (using cross)
+        if: ${{ matrix.platform.cross && contains(matrix.platform.target, 'windows-msvc') }}
+        run: |
+          cargo install cross --git https://github.com/cross-rs/cross
+          set GITON_OPENAI_KEY=void
+          cross ${{ matrix.platform.command }} --target ${{ matrix.platform.target }} ${{ matrix.features.args }}
+
       - name: test (using cargo)
         if: ${{ !matrix.platform.cross && !contains(matrix.platform.target, 'windows-msvc') }}
         run: |
           export GITON_OPENAI_KEY=void
+          cargo ${{ matrix.platform.command }} --target ${{ matrix.platform.target }} ${{ matrix.features.args }}
+
+      - name: test (using cargo)
+        if: ${{ !matrix.platform.cross && contains(matrix.platform.target, 'windows-msvc') }}
+        run: |
+          set GITON_OPENAI_KEY=void
           cargo ${{ matrix.platform.command }} --target ${{ matrix.platform.target }} ${{ matrix.features.args }}
