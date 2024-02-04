@@ -138,6 +138,7 @@ pub fn helpme() -> Result<()> {
 
     // get git status
     let git_status = git::get_status()?;
+
     // get git log
     let git_log = git::get_log()?;
 
@@ -185,6 +186,8 @@ pub fn helpme() -> Result<()> {
         .content
         .as_ref()
         .ok_or_else(|| Error::new("No content returned"))?;
+
+    dbg!(returned_command);
 
     // decode returned response
     let decoded_command = crate::decode::decode_gpt_response(returned_command.to_string())?;
