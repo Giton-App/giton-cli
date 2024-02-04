@@ -181,11 +181,11 @@ pub fn helpme() -> Result<()> {
     let returned_command = response
         .choices
         .first()
-        .ok_or_else(|| GitonError::new("No choices returned"))?
+        .ok_or_else(|| GitonError::EmptyResponse(String::from("No choices returned")))?
         .message
         .content
         .as_ref()
-        .ok_or_else(|| GitonError::new("No content returned"))?;
+        .ok_or_else(|| GitonError::EmptyResponse(String::from("No content returned")))?;
 
     dbg!(returned_command);
 

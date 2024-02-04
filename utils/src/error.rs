@@ -17,6 +17,8 @@ pub enum GitonError {
     },
     #[error("Decode Error: {0}")]
     DecodeResponse(String),
+    #[error("Empty Response: {0}")]
+    EmptyResponse(String),
     #[error("IO Error")]
     Io(#[from] std::io::Error),
     #[error("Config Error")]
