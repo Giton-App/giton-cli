@@ -1,6 +1,16 @@
-giton
-------------
+<p align="center">
+<a href="https://Giton-App.github.io"><img src="https://raw.githubusercontent.com/Giton-App/giton-cli/main/docs/logo.svg" height="100px"/></a>
+ </p>
+<h1 align="center">giton</h1>
+<div align="center">
+ <strong>
+    AI augmentation for the GIT commandline
+ </strong>
+</div>
+<br/>
+
 [![Build](https://github.com/Giton-App/giton-cli/actions/workflows/build.yml/badge.svg)](https://github.com/Giton-App/giton-cli/actions/workflows/build.yml)
+[![Tests](https://github.com/Giton-App/giton-cli/actions/workflows/test.yml/badge.svg)](https://github.com/Giton-App/giton-cli/actions/workflows/test.yml)
 [![Crates.io](https://img.shields.io/crates/v/giton.svg)](https://crates.io/crates/giton)
 [![MIT License](https://img.shields.io/github/license/Giton-App/giton-cli)](https://github.com/Giton-App/giton-cli/LICENSE)
 
