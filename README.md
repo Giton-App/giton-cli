@@ -21,7 +21,13 @@
 **Table of Contents**
 
 - [Installation](#installation)
-- [Examples](#examples)
+  - [Pre-Built Binaries](#pre-built-binaries)
+  - [Compilation with Cargo](#compilation-with-cargo)
+- [Configuration](#configuration)
+- [Commands](#commands)
+  - [history](#history)
+  - [helpme](#helpme)
+  - [undo](#undo)
 - [GPT-4 Costs](#gpt-4-costs)
 - [Vulnerability reporting](#vulnerability-reporting)
 - [License](#license)
