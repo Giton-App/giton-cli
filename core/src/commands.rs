@@ -30,6 +30,7 @@ pub fn config() -> Result<()> {
     Ok(())
 }
 
+/// Show the contents of the history file
 pub fn history() -> Result<()> {
     // display commands history
     db::display_commands()?;
@@ -37,6 +38,7 @@ pub fn history() -> Result<()> {
     Ok(())
 }
 
+/// undo command
 pub fn undo() -> Result<()> {
     // start spinner animation
     let mut spinner = Spinner::new(Spinners::Dots2, "Communicating with Open AI".into());
@@ -131,6 +133,7 @@ pub fn undo() -> Result<()> {
     Ok(())
 }
 
+/// helpme command
 pub fn helpme() -> Result<()> {
     // start spinner animation
     let mut spinner = Spinner::new(Spinners::Dots2, "Communicating with Open AI".into());

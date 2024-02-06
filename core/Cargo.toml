@@ -1,6 +1,6 @@
 [package]
 name = "giton-core"
-version = "0.0.1"
+version = "0.1.0"
 authors = ["Abid Omar <contact@omarabid.com>"]
 description = "Main Package"
 edition = "2021"
@@ -10,13 +10,13 @@ license = "MIT"
 keywords = ["giton-workspace"]
 
 [dependencies]
-utils = { path = "../utils", version = "0.0.1", package = "giton-utils" }
+utils = { path = "../utils", version = "0.1.0", package = "giton-utils" }
 
 
 async-std = { version = "1.12.0", features = ["attributes", "tokio1"] }
 log = "0.4.20"
 chrono = "0.4.31"
-async-openai = "0.17.0"
+async-openai = "0.18.2"
 reqwest = "0.11.22"
 comfy-table = "7.1.0"
 spinners = "4.1.1"
