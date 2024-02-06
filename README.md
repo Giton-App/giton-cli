@@ -4,7 +4,7 @@
 <h1 align="center">giton</h1>
 <div align="center">
  <strong>
-    AI augmentation for the GIT commandline
+    AI augmentation for Git
  </strong>
 </div>
 <br/>
